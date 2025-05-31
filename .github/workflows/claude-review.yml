@@ -1,8 +1,14 @@
 name: Auto review PRs
 
+# Temporarily disabled automatic trigger to save API usage
+# Original trigger:
+# on:
+#   pull_request:
+#     types: [opened]
+
+# Manual trigger only
 on:
-  pull_request:
-    types: [opened]
+  workflow_dispatch:
 
 jobs:
   auto-review:
