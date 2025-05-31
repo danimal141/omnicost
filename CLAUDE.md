@@ -1,8 +1,8 @@
 # CLAUDE.md  
 **Project Name:** `omnicost` – Multi-cloud cost report CLI
 
-> Status: **Planning**  
-> Target version: **v1.0.0 GA** (8 weeks)
+> Status: **Development**  
+> Target version: **v1.0.0 GA**
 
 ---
 
@@ -79,13 +79,13 @@ omnicost/
 
 ## 4  Development Phases
 
-### Phase 1: Foundation (Week 1-2) ✅
+### Phase 1: Foundation ✅
 - [x] Project setup (TypeScript, ESLint, testing)
 - [x] CLI skeleton with commander.js
 - [x] Provider adapter interface
 - [x] Basic AWS Cost Explorer integration
 
-### Phase 2: Provider Implementation (Week 3-4) 🚧
+### Phase 2: Provider Implementation 🚧
 - [x] AWS Cost Explorer
   - [x] Full API integration with @aws-sdk/client-cost-explorer
   - [x] Credential validation
@@ -96,13 +96,13 @@ omnicost/
 - [ ] Azure Cost Management API
 - [ ] Datadog Usage API
 
-### Phase 3: Output & Integration (Week 5-6)
+### Phase 3: Output & Integration
 - [ ] TSV/CSV/Markdown formatters
 - [ ] Google Sheets OAuth & write
 - [ ] Date range & grouping options
 - [ ] Progress indicators
 
-### Phase 4: Polish & Release (Week 7-8)
+### Phase 4: Polish & Release
 - [ ] Comprehensive testing
 - [ ] Documentation (README, examples)
 - [ ] CI/CD pipeline
