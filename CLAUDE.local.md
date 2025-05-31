@@ -1,0 +1,2 @@
+- 作業が一段落したらlint, format, testがパスすることを確認し、落ちている場合は修正すること
+- AWS PROFILEなどcredentialsは.gitignoreに必ず追加し、コミットしないようにすること
