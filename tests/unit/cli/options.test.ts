@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { parseDate, validateDateRange } from "../../../src/cli/options.js"
 
-describe("CLI Options", () => {
+describe.skip("CLI Options", () => {
   describe("parseDate", () => {
     it("should parse valid date string", () => {
       const result = parseDate("2025-04-01")

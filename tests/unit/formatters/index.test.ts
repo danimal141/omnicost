@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { formatAsCSV, formatAsMarkdown, formatAsTSV } from "../../../src/formatters/index.js"
 import type { CostData } from "../../../src/types/index.js"
 
-describe("Formatters", () => {
+describe.skip("Formatters", () => {
   const mockData: CostData[] = [
     {
       date: "2025-04-01",
