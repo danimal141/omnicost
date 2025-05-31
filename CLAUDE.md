@@ -79,17 +79,22 @@ omnicost/
 
 ## 4  Development Phases
 
-### Phase 1: Foundation (Week 1-2)
+### Phase 1: Foundation (Week 1-2) ✅
 - [x] Project setup (TypeScript, ESLint, testing)
-- [ ] CLI skeleton with commander.js
-- [ ] Provider adapter interface
-- [ ] Basic AWS Cost Explorer integration
+- [x] CLI skeleton with commander.js
+- [x] Provider adapter interface
+- [x] Basic AWS Cost Explorer integration
 
-### Phase 2: Provider Implementation (Week 3-4)
+### Phase 2: Provider Implementation (Week 3-4) 🚧
+- [x] AWS Cost Explorer
+  - [x] Full API integration with @aws-sdk/client-cost-explorer
+  - [x] Credential validation
+  - [x] Error handling & retry logic (3 attempts, exponential backoff)
+  - [x] Pagination support
+  - [x] Comprehensive unit tests (9 test cases)
 - [ ] GCP BigQuery billing export
 - [ ] Azure Cost Management API
 - [ ] Datadog Usage API
-- [ ] Error handling & retry logic
 
 ### Phase 3: Output & Integration (Week 5-6)
 - [ ] TSV/CSV/Markdown formatters
@@ -220,3 +225,30 @@ tests/
 - [ ] Slack/Teams notifications
 - [ ] Cost allocation tags support
 - [ ] Multi-account/project aggregation
+
+---
+
+## 8  Current TODO List
+
+### ✅ Completed
+- Project foundation setup
+- AWS provider full implementation with tests
+- CLI command structure for AWS
+
+### 🚧 In Progress
+- None
+
+### 📋 Next Tasks (Priority Order)
+1. **GCP BigQuery billing export provider** - Next provider to implement
+2. **Azure Cost Management API provider**
+3. **Datadog Usage API provider**
+4. **Google Sheets integration** - OAuth & direct write functionality
+5. **Complete unit tests** - CLI options & formatters (currently skipped)
+6. **Documentation** - README, usage examples
+
+### 📝 Development Notes
+- AWS provider serves as reference implementation for other providers
+- All providers should follow same pattern: validateCredentials(), fetchCosts()
+- Maintain test coverage above 80%
+- Run `npm run lint`, `npm run format`, `npm test` before commits
+- Keep credentials in environment variables, never commit them
