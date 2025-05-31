@@ -5,7 +5,9 @@
 ## 必要な設定
 
 ### 1. Claude GitHub Appのインストール
-[Claude GitHub App](https://github.com/apps/claude-ai)をリポジトリにインストールしてください。
+[Claude GitHub App](https://github.com/apps/claude)をリポジトリにインストールしてください。
+
+**重要**: GitHub Appのインストールは必須です。インストールしないとワークフローが動作しません。
 
 ### 2. シークレットの設定
 GitHub リポジトリの Settings > Secrets and variables > Actions で以下のシークレットを設定してください：
