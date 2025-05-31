@@ -1,43 +1,64 @@
 import { describe, expect, it } from "vitest"
-import { parseDate, validateDateRange } from "../../../src/cli/options.js"
+import { validateDates, validateFormat, validateGroupBy } from "../../../src/cli/options.js"
 
 describe.skip("CLI Options", () => {
-  describe("parseDate", () => {
-    it("should parse valid date string", () => {
-      const result = parseDate("2025-04-01")
-      expect(result).toBeInstanceOf(Date)
-      expect(result.toISOString()).toBe("2025-04-01T00:00:00.000Z")
-    })
-
-    it("should throw error for invalid date format", () => {
-      expect(() => parseDate("2025/04/01")).toThrow("Invalid date format")
-      expect(() => parseDate("01-04-2025")).toThrow("Invalid date format")
-      expect(() => parseDate("not-a-date")).toThrow("Invalid date format")
-    })
-
-    it("should throw error for invalid date values", () => {
-      expect(() => parseDate("2025-13-01")).toThrow("Invalid date")
-      expect(() => parseDate("2025-04-32")).toThrow("Invalid date")
-      expect(() => parseDate("2025-02-30")).toThrow("Invalid date")
-    })
-  })
-
-  describe("validateDateRange", () => {
+  describe("validateDates", () => {
     it("should validate correct date range", () => {
-      const start = new Date("2025-04-01")
-      const end = new Date("2025-04-30")
-      expect(() => validateDateRange(start, end)).not.toThrow()
+      expect(() => validateDates("2025-04-01", "2025-04-30")).not.toThrow()
     })
 
     it("should throw error when start date is after end date", () => {
-      const start = new Date("2025-04-30")
-      const end = new Date("2025-04-01")
-      expect(() => validateDateRange(start, end)).toThrow("Start date must be before end date")
+      expect(() => validateDates("2025-04-30", "2025-04-01")).toThrow(
+        "Start date must be before end date",
+      )
     })
 
     it("should allow same start and end date", () => {
-      const date = new Date("2025-04-01")
-      expect(() => validateDateRange(date, date)).not.toThrow()
+      expect(() => validateDates("2025-04-01", "2025-04-01")).not.toThrow()
+    })
+
+    it("should throw error for invalid start date", () => {
+      expect(() => validateDates("invalid-date", "2025-04-01")).toThrow("Invalid start date")
+    })
+
+    it("should throw error for invalid end date", () => {
+      expect(() => validateDates("2025-04-01", "invalid-date")).toThrow("Invalid end date")
+    })
+  })
+
+  describe("validateGroupBy", () => {
+    it("should validate correct group by dimensions", () => {
+      expect(validateGroupBy("SERVICE")).toBe("SERVICE")
+      expect(validateGroupBy("TAG")).toBe("TAG")
+      expect(validateGroupBy("REGION")).toBe("REGION")
+      expect(validateGroupBy("ACCOUNT")).toBe("ACCOUNT")
+    })
+
+    it("should convert lowercase to uppercase", () => {
+      expect(validateGroupBy("service")).toBe("SERVICE")
+      expect(validateGroupBy("tag")).toBe("TAG")
+    })
+
+    it("should throw error for invalid dimension", () => {
+      expect(() => validateGroupBy("INVALID")).toThrow("Invalid group-by dimension")
+    })
+  })
+
+  describe("validateFormat", () => {
+    it("should validate correct output formats", () => {
+      expect(validateFormat("tsv")).toBe("tsv")
+      expect(validateFormat("csv")).toBe("csv")
+      expect(validateFormat("markdown")).toBe("markdown")
+    })
+
+    it("should convert uppercase to lowercase", () => {
+      expect(validateFormat("TSV")).toBe("tsv")
+      expect(validateFormat("CSV")).toBe("csv")
+      expect(validateFormat("MARKDOWN")).toBe("markdown")
+    })
+
+    it("should throw error for invalid format", () => {
+      expect(() => validateFormat("xml")).toThrow("Invalid format")
     })
   })
 })

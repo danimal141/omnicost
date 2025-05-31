@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { AwsCostProvider } from "../../../../src/providers/aws/index.js"
+import { AWSCostProvider } from "../../../../src/providers/aws/index.js"
 import type { CostData, FetchParams } from "../../../../src/types/index.js"
 
 describe.skip("AWS Cost Provider", () => {
-  let provider: AwsCostProvider
+  let provider: AWSCostProvider
 
   beforeEach(() => {
-    provider = new AwsCostProvider()
+    provider = new AWSCostProvider()
   })
 
   describe("fetchCosts", () => {
