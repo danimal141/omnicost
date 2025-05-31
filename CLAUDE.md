@@ -1,0 +1,174 @@
+# CLAUDE.md  
+**Project Name:** `omnicost` – Multi-cloud cost report CLI
+
+> Status: **Planning**  
+> Target version: **v1.0.0 GA** (8 weeks)
+
+---
+
+## 1  Why this project?
+
+| Problem | Need |
+|---------|------|
+| クラウド別・期間別のコスト明細を毎回ポータルで手作業DL | **1コマンド**で取得 → スプレッドシートに貼るだけにしたい |
+| マルチクラウド (AWS / GCP / Azure / Datadog) で API 仕様がバラバラ | アダプタ方式で **共通スキーマ** に正規化 |
+| Excel 加工が面倒・自動化しづらい | TSV/CSV だけでなく **Google Sheets 直接書込み** |
+
+---
+
+## 2  MVP Scope
+
+* **Providers:** AWS Cost Explorer · GCP Billing BQ Export · Azure Cost Details API · Datadog Usage
+* **Output:** TSV (default) / CSV / Markdown &rarr; Stdout -or- **Google Sheets** (`--sheet <URL>`)
+* **CLI Usage (typical)**  
+  ```bash
+  omnicost aws --account-id 123456... \
+    --start 2025-04-01 --end 2025-04-30 \
+    --group-by SERVICE --sheet https://docs.google.com/...
+  ```
+
+---
+
+## 3  Core Architecture
+
+### 3.1 Provider Adapter Pattern
+```typescript
+interface CostProvider {
+  fetchCosts(params: FetchParams): Promise<CostData[]>
+  validateCredentials(): Promise<boolean>
+}
+
+interface CostData {
+  date: string
+  service: string
+  amount: number
+  currency: string
+  tags?: Record<string, string>
+}
+```
+
+### 3.2 Directory Structure
+```
+omnicost/
+├── src/
+│   ├── cli/           # CLI entry point & command definitions
+│   ├── providers/     # Cloud provider adapters
+│   │   ├── aws/
+│   │   ├── gcp/
+│   │   ├── azure/
+│   │   └── datadog/
+│   ├── formatters/    # Output formatters (TSV, CSV, Markdown)
+│   ├── sheets/        # Google Sheets integration
+│   └── utils/         # Common utilities
+├── tests/
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+### 3.3 Key Dependencies
+- **CLI**: commander.js
+- **AWS**: @aws-sdk/client-cost-explorer
+- **GCP**: @google-cloud/bigquery
+- **Azure**: @azure/arm-costmanagement
+- **Google Sheets**: googleapis
+- **Testing**: vitest
+- **Linting**: eslint + prettier
+
+---
+
+## 4  Development Phases
+
+### Phase 1: Foundation (Week 1-2)
+- [x] Project setup (TypeScript, ESLint, testing)
+- [ ] CLI skeleton with commander.js
+- [ ] Provider adapter interface
+- [ ] Basic AWS Cost Explorer integration
+
+### Phase 2: Provider Implementation (Week 3-4)
+- [ ] GCP BigQuery billing export
+- [ ] Azure Cost Management API
+- [ ] Datadog Usage API
+- [ ] Error handling & retry logic
+
+### Phase 3: Output & Integration (Week 5-6)
+- [ ] TSV/CSV/Markdown formatters
+- [ ] Google Sheets OAuth & write
+- [ ] Date range & grouping options
+- [ ] Progress indicators
+
+### Phase 4: Polish & Release (Week 7-8)
+- [ ] Comprehensive testing
+- [ ] Documentation (README, examples)
+- [ ] CI/CD pipeline
+- [ ] npm publish
+
+---
+
+## 5  CLI Commands & Options
+
+### Basic Usage
+```bash
+# AWS costs for last month
+omnicost aws --start 2025-04-01 --end 2025-04-30
+
+# GCP with BigQuery dataset
+omnicost gcp --project my-project --dataset billing_export \
+  --start 2025-04-01 --end 2025-04-30
+
+# Azure with subscription ID
+omnicost azure --subscription 12345... --start 2025-04-01 --end 2025-04-30
+
+# Datadog usage
+omnicost datadog --start 2025-04-01 --end 2025-04-30
+```
+
+### Common Options
+```bash
+--start, -s        Start date (YYYY-MM-DD)
+--end, -e          End date (YYYY-MM-DD)
+--group-by, -g     Group by dimension (SERVICE, TAG, etc.)
+--format, -f       Output format (tsv, csv, markdown)
+--sheet            Google Sheets URL for direct write
+--quiet, -q        Suppress progress output
+```
+
+### Environment Variables
+```bash
+# AWS
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_REGION
+
+# GCP
+GOOGLE_APPLICATION_CREDENTIALS
+
+# Azure
+AZURE_CLIENT_ID
+AZURE_CLIENT_SECRET
+AZURE_TENANT_ID
+
+# Datadog
+DD_API_KEY
+DD_APP_KEY
+```
+
+---
+
+## 6  Testing Strategy
+
+- **Unit tests**: Provider adapters, formatters
+- **Integration tests**: API mocking with nock
+- **E2E tests**: CLI commands with fixture data
+- **Coverage target**: 80%+
+
+---
+
+## 7  Future Enhancements (Post-MVP)
+
+- [ ] Cost anomaly detection
+- [ ] Budget alerts
+- [ ] Historical trend charts
+- [ ] Slack/Teams notifications
+- [ ] Cost allocation tags support
+- [ ] Multi-account/project aggregation
