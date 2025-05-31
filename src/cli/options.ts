@@ -1,5 +1,5 @@
 import type { Command } from "commander"
-import type { GroupByDimension, OutputFormat } from "../types"
+import type { GroupByDimension, OutputFormat } from "../types/index.js"
 
 export function addCommonOptions(command: Command): Command {
   return command
