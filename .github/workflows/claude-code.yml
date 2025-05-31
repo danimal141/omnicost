@@ -1,0 +1,46 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v44
+      with:
+        separator: ","
+    
+    - name: Review with Claude Code
+      if: steps.changed-files.outputs.any_changed == 'true'
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      run: |
+        # Install Claude Code CLI
+        npm install -g @anthropic/claude-code
+        
+        # Create review prompt
+        echo "Please review the following code changes and provide feedback on:" > review_prompt.txt
+        echo "1. Code quality and best practices" >> review_prompt.txt
+        echo "2. Potential bugs or issues" >> review_prompt.txt
+        echo "3. Performance considerations" >> review_prompt.txt
+        echo "4. Security concerns" >> review_prompt.txt
+        echo "" >> review_prompt.txt
+        echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}" >> review_prompt.txt
+        echo "" >> review_prompt.txt
+        echo "Diff:" >> review_prompt.txt
+        git diff origin/${{ github.base_ref }}...HEAD >> review_prompt.txt
+        
+        # Run Claude Code review
+        claude-code review --prompt-file review_prompt.txt --output review_result.md
+        
+        # Post review as PR comment
+        gh pr comment ${{ github.event.pull_request.number }} --body-file review_result.md
