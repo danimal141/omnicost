@@ -1,46 +1,34 @@
-name: Claude Code Review
+name: Claude Assistant
 
 on:
+  issue_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
   pull_request:
-    types: [opened, synchronize]
+    types: [opened]
 
 jobs:
-  claude-review:
+  claude-response:
     runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'pull_request' && github.event.action == 'opened')
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: anthropics/claude-code-action@beta
       with:
-        fetch-depth: 0
-    
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v44
-      with:
-        separator: ","
-    
-    - name: Review with Claude Code
-      if: steps.changed-files.outputs.any_changed == 'true'
-      env:
-        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      run: |
-        # Install Claude Code CLI
-        npm install -g @anthropic/claude-code
-        
-        # Create review prompt
-        echo "Please review the following code changes and provide feedback on:" > review_prompt.txt
-        echo "1. Code quality and best practices" >> review_prompt.txt
-        echo "2. Potential bugs or issues" >> review_prompt.txt
-        echo "3. Performance considerations" >> review_prompt.txt
-        echo "4. Security concerns" >> review_prompt.txt
-        echo "" >> review_prompt.txt
-        echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}" >> review_prompt.txt
-        echo "" >> review_prompt.txt
-        echo "Diff:" >> review_prompt.txt
-        git diff origin/${{ github.base_ref }}...HEAD >> review_prompt.txt
-        
-        # Run Claude Code review
-        claude-code review --prompt-file review_prompt.txt --output review_result.md
-        
-        # Post review as PR comment
-        gh pr comment ${{ github.event.pull_request.number }} --body-file review_result.md
+        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        trigger_phrase: "@claude"
+        custom_instructions: |
+          You are reviewing code for the omnicost project, a multi-cloud cost report CLI.
+          When a PR is opened, automatically review the changes and provide feedback on:
+          1. Code quality and TypeScript best practices
+          2. Potential bugs or issues
+          3. Performance considerations
+          4. Security concerns
+          5. Consistency with the project architecture and patterns
+          
+          Be concise and focus on actionable feedback.

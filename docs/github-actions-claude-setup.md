@@ -1,47 +1,50 @@
-# GitHub ActionsでClaude Codeを使用する設定
+# GitHub ActionsでClaude Assistantを使用する設定
 
-このプロジェクトでは、GitHub ActionsでClaude Codeを使用して自動コードレビューとアシスタント機能を提供しています。
+このプロジェクトでは、公式の[Claude Code Action](https://github.com/anthropics/claude-code-action)を使用して、GitHub上でClaude AIアシスタント機能を提供しています。
 
-## 必要なシークレット設定
+## 必要な設定
 
+### 1. Claude GitHub Appのインストール
+[Claude GitHub App](https://github.com/apps/claude-ai)をリポジトリにインストールしてください。
+
+### 2. シークレットの設定
 GitHub リポジトリの Settings > Secrets and variables > Actions で以下のシークレットを設定してください：
 
-### ANTHROPIC_API_KEY
+#### ANTHROPIC_API_KEY
 Claude APIキーを設定します。
 
 1. [Anthropic Console](https://console.anthropic.com/)にアクセス
 2. API Keys セクションで新しいキーを作成
 3. リポジトリのシークレットに `ANTHROPIC_API_KEY` として追加
 
-## ワークフロー概要
+## ワークフロー機能
 
-### 1. Claude Code Review (`claude-code.yml`)
-- **トリガー**: Pull Requestの作成・更新時
-- **機能**: 変更されたコードを自動的にレビューし、フィードバックをPRコメントとして投稿
+### Claude Assistant (`claude-code.yml`)
+- **自動レビュー**: Pull Requestを作成すると、Claudeが自動的にコードをレビュー
+- **インタラクティブアシスト**: コメントで `@claude` をメンションすると応答
 - **レビュー観点**:
-  - コード品質とベストプラクティス
+  - コード品質とTypeScriptベストプラクティス
   - 潜在的なバグや問題
   - パフォーマンスの考慮事項
   - セキュリティの懸念事項
+  - プロジェクトアーキテクチャとの整合性
 
-### 2. Claude Code Assist (`claude-assist.yml`)
-- **トリガー**: PRコメントで `@claude` をメンション
-- **機能**: コメントの内容に基づいてClaude Codeがアシスタントとして応答
-- **使用例**:
-  ```
-  @claude このコードのテストを書いて
-  @claude この関数のパフォーマンスを改善する方法を提案して
-  @claude このエラーの原因を説明して
-  ```
+## 使用例
 
-## 使用方法
+### PRコメントでの使用
+```
+@claude このコードのテストを書いて
+@claude この関数のパフォーマンスを改善する方法を提案して
+@claude このエラーの原因を説明して
+@claude このPRの変更をレビューして
+```
 
-1. **自動レビュー**: PRを作成すると自動的にClaude Codeによるレビューが実行されます
-
-2. **インタラクティブアシスト**: PRコメントで `@claude` に続けて質問や依頼を書くと、Claude Codeが応答します
+### PRレビューでの使用
+PRレビューコメントでも同様に `@claude` をメンションできます。
 
 ## 注意事項
 
 - APIキーは必ずGitHub Secretsに保存し、コードにハードコードしないでください
-- Claude Code CLIは現在開発中のため、実際の使用時はドキュメントを確認してください
+- Claude Code Actionは現在ベータ版です
 - APIの使用量に応じて課金が発生する可能性があります
+- Claudeは自動的にコミットを作成する権限を持ちます
