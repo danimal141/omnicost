@@ -21,9 +21,9 @@ export interface CostProvider {
   validateCredentials(): Promise<boolean>
 }
 
-export type GroupByDimension = 'SERVICE' | 'TAG' | 'REGION' | 'ACCOUNT'
+export type GroupByDimension = "SERVICE" | "TAG" | "REGION" | "ACCOUNT"
 
-export type OutputFormat = 'tsv' | 'csv' | 'markdown'
+export type OutputFormat = "tsv" | "csv" | "markdown"
 
 export interface CLIOptions {
   start: string
