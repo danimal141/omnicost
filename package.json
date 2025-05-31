@@ -1,6 +1,6 @@
 {
   "name": "omnicost",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Multi-cloud cost report CLI",
   "main": "dist/index.js",
   "bin": {

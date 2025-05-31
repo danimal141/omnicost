@@ -157,10 +157,58 @@ DD_APP_KEY
 
 ## 6  Testing Strategy
 
-- **Unit tests**: Provider adapters, formatters
-- **Integration tests**: API mocking with nock
-- **E2E tests**: CLI commands with fixture data
+### 6.1 Overview
+- **Framework**: Vitest
 - **Coverage target**: 80%+
+- **Test types**: Unit tests only (for now)
+
+### 6.2 Unit Tests
+Focus on isolated component testing:
+
+#### CLI Options (`tests/unit/cli/options.test.ts`)
+- Date parsing validation (YYYY-MM-DD format)
+- Date range validation (start <= end)
+- Invalid input handling
+
+#### Provider Adapters (`tests/unit/providers/*/`)
+- Mock external API calls
+- Test data normalization to CostData interface
+- Error handling (auth failures, network errors)
+- Edge cases (empty results, pagination)
+
+#### Formatters (`tests/unit/formatters/`)
+- TSV/CSV generation accuracy
+- Special character escaping
+- Header formatting
+- Empty data handling
+
+### 6.3 Test Data & Mocking
+- Fixed test fixtures for predictable results
+- API response mocks for all providers
+- Edge case scenarios:
+  - Empty cost data
+  - Single day vs. multi-month ranges
+  - Large datasets (1000+ items)
+  - Various currency formats
+
+### 6.4 Directory Structure
+```
+tests/
+└── unit/
+    ├── cli/
+    │   └── options.test.ts
+    ├── providers/
+    │   ├── aws/
+    │   │   └── index.test.ts
+    │   ├── gcp/
+    │   │   └── index.test.ts
+    │   ├── azure/
+    │   │   └── index.test.ts
+    │   └── datadog/
+    │       └── index.test.ts
+    └── formatters/
+        └── index.test.ts
+```
 
 ---
 
