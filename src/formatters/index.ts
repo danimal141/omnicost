@@ -67,3 +67,8 @@ export function getFormatter(format: OutputFormat): Formatter {
       throw new Error(`Unsupported format: ${format}`)
   }
 }
+
+export function formatCostData(data: CostData[], format: OutputFormat): string {
+  const formatter = getFormatter(format)
+  return formatter.format(data)
+}
