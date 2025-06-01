@@ -2,7 +2,7 @@ import { Command } from "commander"
 import { formatCostData } from "../../formatters/index.js"
 import { AzureCostProvider } from "../../providers/azure/index.js"
 import type { CLIOptions } from "../../types/index.js"
-import { parseOptions } from "../options.js"
+import { validateDates, validateFormat, validateGroupBy } from "../options.js"
 
 export const azureCommand = new Command("azure")
   .description("Fetch cost data from Azure Cost Management")
@@ -15,7 +15,10 @@ export const azureCommand = new Command("azure")
   .option("-q, --quiet", "Suppress progress output")
   .action(async (options: CLIOptions & { subscription: string }) => {
     try {
-      const parsedOptions = parseOptions(options)
+      validateDates(options.start, options.end)
+      const format = validateFormat(options.format || "tsv")
+      const groupBy = options.groupBy ? validateGroupBy(options.groupBy) : undefined
+
       const provider = new AzureCostProvider(options.subscription)
 
       if (!options.quiet) {
@@ -33,9 +36,9 @@ export const azureCommand = new Command("azure")
       }
 
       const costs = await provider.fetchCosts({
-        startDate: parsedOptions.start,
-        endDate: parsedOptions.end,
-        groupBy: parsedOptions.groupBy,
+        startDate: options.start,
+        endDate: options.end,
+        groupBy: groupBy,
       })
 
       if (!options.quiet) {
@@ -43,7 +46,7 @@ export const azureCommand = new Command("azure")
       }
 
       // For now, output to console. Sheet integration will come later.
-      const formatted = formatCostData(costs, parsedOptions.format || "tsv")
+      const formatted = formatCostData(costs, format)
       console.log(formatted)
     } catch (error) {
       console.error("Error:", error instanceof Error ? error.message : error)

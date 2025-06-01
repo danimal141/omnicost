@@ -33,7 +33,13 @@ export function validateDates(start: string, end: string): void {
 }
 
 export function validateGroupBy(groupBy: string): GroupByDimension {
-  const validDimensions: GroupByDimension[] = ["SERVICE", "TAG", "REGION", "ACCOUNT"]
+  const validDimensions: GroupByDimension[] = [
+    "SERVICE",
+    "TAG",
+    "REGION",
+    "ACCOUNT",
+    "RESOURCE_GROUP",
+  ]
   const upperGroupBy = groupBy.toUpperCase() as GroupByDimension
 
   if (!validDimensions.includes(upperGroupBy)) {
@@ -54,4 +60,28 @@ export function validateFormat(format: string): OutputFormat {
   }
 
   return lowerFormat
+}
+
+export interface ParsedOptions {
+  start: string
+  end: string
+  groupBy?: GroupByDimension
+  format?: OutputFormat
+  sheet?: string
+  quiet?: boolean
+}
+
+export function parseOptions(options: Record<string, unknown>): ParsedOptions {
+  const start = options.start as string
+  const end = options.end as string
+  validateDates(start, end)
+
+  return {
+    start,
+    end,
+    groupBy: options.groupBy ? validateGroupBy(options.groupBy as string) : undefined,
+    format: options.format ? validateFormat(options.format as string) : undefined,
+    sheet: options.sheet as string | undefined,
+    quiet: options.quiet as boolean | undefined,
+  }
 }

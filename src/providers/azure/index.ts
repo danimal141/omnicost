@@ -27,7 +27,7 @@ export class AzureCostProvider implements CostProvider {
     }
 
     this.credential = new ClientSecretCredential(tenantId, clientId, clientSecret)
-    this.client = new CostManagementClient(this.credential, this.subscriptionId)
+    this.client = new CostManagementClient(this.credential)
   }
 
   async validateCredentials(): Promise<boolean> {
@@ -103,10 +103,7 @@ export class AzureCostProvider implements CostProvider {
         const date = this.formatDate(row[0] as number)
         const service = params.groupBy ? (row[1] as string) || "Unknown" : "Total"
         const amount = row[params.groupBy ? 2 : 1] as number
-        const currency =
-          response.properties?.columns?.find((col) => col.name === "Cost")?.type === "Currency"
-            ? "USD"
-            : "USD"
+        const currency = "USD" // Azure Cost Management API returns costs in USD by default
 
         results.push({
           date,
