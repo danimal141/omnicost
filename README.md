@@ -4,7 +4,7 @@ Multi-cloud cost report CLI tool that fetches cost data from various cloud provi
 
 ## Features
 
-- **Multi-cloud support**: AWS, Azure, GCP (coming soon), Datadog (coming soon)
+- **Multi-cloud support**: AWS, Azure, GCP, Datadog
 - **Multiple output formats**: TSV (default), CSV, Markdown
 - **Flexible grouping**: Group costs by service, tag, or other dimensions
 - **Date range support**: Specify custom date ranges for cost analysis
@@ -60,16 +60,30 @@ omnicost azure --subscription-id your-subscription-id --start 2025-01-01 --end 2
 omnicost azure --subscription-id your-subscription-id --start 2025-01-01 --end 2025-01-31 --filter-resource-group "rg1,rg2"
 ```
 
-### GCP (Coming Soon)
+### GCP
 
 ```bash
+# Basic usage
 omnicost gcp --project my-project --dataset billing_export --start 2025-01-01 --end 2025-01-31
+
+# Group by project
+omnicost gcp --project my-project --dataset billing_export --start 2025-01-01 --end 2025-01-31 --group-by PROJECT
+
+# Group by region
+omnicost gcp --project my-project --dataset billing_export --start 2025-01-01 --end 2025-01-31 --group-by REGION
 ```
 
-### Datadog (Coming Soon)
+### Datadog
 
 ```bash
+# Basic usage
 omnicost datadog --start 2025-01-01 --end 2025-01-31
+
+# Group by product family
+omnicost datadog --start 2025-01-01 --end 2025-01-31 --group-by PRODUCT_FAMILY
+
+# Filter by specific products
+omnicost datadog --start 2025-01-01 --end 2025-01-31 --filter-product "logs,apm"
 ```
 
 ## Authentication
@@ -108,18 +122,25 @@ export AZURE_TENANT_ID=your-tenant-id
 Required permissions:
 - Cost Management Reader role on the subscription
 
-### GCP (Coming Soon)
+### GCP
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
 ```
 
-### Datadog (Coming Soon)
+Required permissions:
+- BigQuery Data Viewer
+- BigQuery Job User
+
+### Datadog
 
 ```bash
 export DD_API_KEY=your-api-key
 export DD_APP_KEY=your-app-key
 ```
+
+Required permissions:
+- Usage Read permission
 
 ## Options
 
@@ -148,6 +169,19 @@ export DD_APP_KEY=your-app-key
 | `--subscription-id` | Azure subscription ID |
 | `--filter-resource-group` | Comma-separated list of resource groups |
 | `--filter-service` | Comma-separated list of services |
+
+### GCP-specific Options
+
+| Option | Description |
+|--------|-------------|
+| `--project` | GCP Project ID |
+| `--dataset` | BigQuery dataset containing billing export |
+
+### Datadog-specific Options
+
+| Option | Description |
+|--------|-------------|
+| `--filter-product` | Comma-separated list of products to include |
 
 ## Output Formats
 
@@ -251,8 +285,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - [x] AWS Cost Explorer support
 - [x] Azure Cost Management support
-- [ ] GCP BigQuery billing export
-- [ ] Datadog Usage API
+- [x] GCP BigQuery billing export
+- [x] Datadog Usage API
 - [ ] Google Sheets direct write
 - [ ] Cost anomaly detection
 - [ ] Budget alerts
