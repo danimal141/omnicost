@@ -21,7 +21,7 @@ export interface CostProvider {
   validateCredentials(): Promise<boolean>
 }
 
-export type GroupByDimension = "SERVICE" | "TAG" | "REGION" | "ACCOUNT"
+export type GroupByDimension = "SERVICE" | "TAG" | "REGION" | "ACCOUNT" | "RESOURCE_GROUP"
 
 export type OutputFormat = "tsv" | "csv" | "markdown"
 
